@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rule Definition</title>
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='bootstrap.bundle.min.js') }}" defer></script>
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <script>
+        let ruleCount = {{ existing_rules }};  // Start from the number of existing rules
+    </script>
+    
+      
+</head>
+<body>
+    <div class="container mt-4" id="normal">
+        <h1 class="mb-4">Define Rules for {{ table_name }}</h1>
+
+        <!-- Table Selection Dropdown -->
+        <select id="selectedTableName" class="form-select form-select-lg mb-3" onchange="selectTable()">
+            <option selected disabled>Select a table to edit rules</option>
+            {% for name in tableNames %}
+            <option value="{{ name }}">{{ name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Rule Names Dropdown -->
+        <div class="dropdown mb-3">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="ruleDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Select a Rule to Edit
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="ruleDropdownButton">
+                {% for rule_name in rule_names %}
+                <li><a class="dropdown-item" href="#" id="option--{{ rule_name }}" onclick="tabSwitch('{{ rule_name }}')">{{ rule_name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <form id="rulesForm">
+            <div id="rulesTabContainer">
+                {% for rule_name in rule_names %}
+                <div id="rulesContainer--{{ rule_name }}" class="d-none">
+                    <h3 class="mb-4">Rule: {{ rule_name }}</h3>
+                    {% if rules[rule_name] %}
+                        {% for rule in rules[rule_name] %}
+                        <!-- Show existing rules -->
+                        <div class="row g-3 align-items-center mb-3 d-none" id="table--{{ rule.table }}--{{ rule.id }}" name="{{ rule.table }}">
+                            <div class="col-md-2 form-floating">
+                                <input type="text" class="form-control" name="exist_rule_column" value="{{ rule.column }}" placeholder="column" disabled>
+                                <label>column</label>
+                            </div>
+                            {% if rule.param1 != None %}
+                            <div class="col-md-2 form-floating">
+                                <input type="text" class="form-control" name="" value="{{ rule.value_param1 }}" placeholder="Lower Limit" disabled>
+                                <label>{{ rule.param1 }}</label>
+                            </div>
+                            {% endif %}
+                            {% if rule.param2 != None %}
+                            <div class="col-md-2 form-floating">
+                                <input type="text" class="form-control" name="" value="{{ rule.value_param2 }}" placeholder="Lower Limit" disabled>
+                                <label>{{ rule.param2 }}</label>
+                            </div>
+                            {% endif %}
+                            {% if rule.param3 != None %}
+                            <div class="col-md-2 form-floating">
+                                <input type="text" class="form-control" name="" value="{{ rule.value_param3 }}" placeholder="Lower Limit" disabled>
+                                <label>{{ rule.param3 }}</label>
+                            </div>
+                            {% endif %}
+                            {% if rule.param4 != None %}
+                            <div class="col-md-2 form-floating">
+                                <input type="text" class="form-control" name="" value="{{ rule.value_param4 }}" placeholder="Lower Limit" disabled>
+                                <label>{{ rule.param4 }}</label>
+                            </div>
+                            {% endif %}
+                            {% if rule.param5 != None %}
+                            <div class="col-md-2 form-floating">
+                                <input type="text" class="form-control" name="" value="{{ rule.value_param5 }}" placeholder="Lower Limit" disabled>
+                                <label>{{ rule.param5 }}</label>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger" onclick="removeSavedRule('table--{{ rule.table }}--{{ rule.id }}', '{{ rule_name }}')">Remove</button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <p>No rules defined for this category. Click "Add Rule" to create one.</p>
+                    {% endif %}
+                    <button type="button" id="addRuleButton--{{ rule_name }}" class="btn btn-primary mt-2" onclick="addRule('{{ rule_name }}')">Add Rule</button>
+                    <br><br>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-success mt-2">Submit Rules</button>
+        </form>
+        <!-- <div>
+            <select id="select_table_ref" class="form-select form-select-lg mb-3" onchange="table_selection('select_table_ref', 'test_column')">
+                <option selected disabled>Select a table to edit rules</option>
+                {% for name in tableNames %}
+                <option value="{{ name }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+            <select id="test_column"></select>
+        </div> -->
+    </div>
+    <div id="confirmation" class="container mt-4 d-none">
+        <div class="container mt-4" id="confirmation--remove">
+            <h3 class="mb-3">Removing rules</h3>
+        </div>
+        <div class="container mt-4" id="confirmation--add">
+            <h3 class="mb-3">Adding rules</h3>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <button name="submit" type="button" class="btn btn-success me-3" id="confirm_button" onclick="submission()">CONFIRM</button>
+            </div>
+            <div class="col-auto">
+                <button name="cancel" type="reset" class="btn btn-danger" id="cancel_button" onclick="cancel()">GO BACK</button>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
