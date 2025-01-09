@@ -258,7 +258,7 @@ def create_config_file():
         except KeyError:
             pass
 
-    with open(r'C:\Users\ASUS\Desktop\Playground\DBT_DDData_model\sources\schema.yml', "w", encoding="utf-8") as f:
+    with open(r'schema.yml', "w", encoding="utf-8") as f:
         yaml.dump(file_config, f, allow_unicode=True)
 
     return jsonify({"status": "success", "message": "Schema wrote!"})
